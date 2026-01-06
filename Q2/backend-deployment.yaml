@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: 22i-2566-mern-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: noorulain26/docker-mern-nginx-bezkoder-api-1:latest
+        ports:
+        - containerPort: 6868
+        env:
+        - name: MONGO_URL
+          value: mongodb://mongodb-service:27017
