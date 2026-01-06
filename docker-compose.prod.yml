@@ -1,8 +1,8 @@
-# Production docker-compose for pulling images from registry
+
 version: '3.8'
 
 services:
-  # Auth Service - Internal only
+  
   auth-service:
     image: ${DOCKER_USERNAME}/healthcare-auth-service:latest
     container_name: auth-service
@@ -16,7 +16,6 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  # Patient Service - Internal only
   patient-service:
     image: ${DOCKER_USERNAME}/healthcare-patient-service:latest
     container_name: patient-service
@@ -30,7 +29,7 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  # Doctor Service - Internal only
+  
   doctor-service:
     image: ${DOCKER_USERNAME}/healthcare-doctor-service:latest
     container_name: doctor-service
@@ -44,7 +43,7 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  # Appointment Service - Internal only
+  
   appointment-service:
     image: ${DOCKER_USERNAME}/healthcare-appointment-service:latest
     container_name: appointment-service
@@ -61,7 +60,7 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  # Notification Service - Internal only
+  
   notification-service:
     image: ${DOCKER_USERNAME}/healthcare-notification-service:latest
     container_name: notification-service
@@ -75,12 +74,11 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  # API Gateway - ONLY service exposed to host
   api-gateway:
     image: ${DOCKER_USERNAME}/healthcare-api-gateway:latest
     container_name: api-gateway
     ports:
-      - "4000:4000"  # Only gateway is exposed externally
+      - "4000:4000"  
     networks:
       - microservices-network
     depends_on:
