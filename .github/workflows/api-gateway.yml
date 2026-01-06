@@ -3,7 +3,6 @@ name: API Gateway
 on:
   push:
     branches: [main]
-    paths: ['api-gateway/**']
 
 jobs:
   build:

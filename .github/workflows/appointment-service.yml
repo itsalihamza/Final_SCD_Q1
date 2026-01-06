@@ -3,7 +3,6 @@ name: Appointment Service
 on:
   push:
     branches: [main]
-    paths: ['appointment-service/**']
 
 jobs:
   build:

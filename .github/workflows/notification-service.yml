@@ -3,7 +3,6 @@ name: Notification Service
 on:
   push:
     branches: [main]
-    paths: ['notification-service/**']
 
 jobs:
   build:

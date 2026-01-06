@@ -3,7 +3,6 @@ name: Doctor Service
 on:
   push:
     branches: [main]
-    paths: ['doctor-service/**']
 
 jobs:
   build:
