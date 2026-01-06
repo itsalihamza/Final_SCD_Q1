@@ -1,0 +1,106 @@
+# Production docker-compose for pulling images from registry
+version: '3.8'
+
+services:
+  # Auth Service - Internal only
+  auth-service:
+    image: ${DOCKER_USERNAME}/healthcare-auth-service:latest
+    container_name: auth-service
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Patient Service - Internal only
+  patient-service:
+    image: ${DOCKER_USERNAME}/healthcare-patient-service:latest
+    container_name: patient-service
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Doctor Service - Internal only
+  doctor-service:
+    image: ${DOCKER_USERNAME}/healthcare-doctor-service:latest
+    container_name: doctor-service
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Appointment Service - Internal only
+  appointment-service:
+    image: ${DOCKER_USERNAME}/healthcare-appointment-service:latest
+    container_name: appointment-service
+    networks:
+      - microservices-network
+    depends_on:
+      notification-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Notification Service - Internal only
+  notification-service:
+    image: ${DOCKER_USERNAME}/healthcare-notification-service:latest
+    container_name: notification-service
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # API Gateway - ONLY service exposed to host
+  api-gateway:
+    image: ${DOCKER_USERNAME}/healthcare-api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "4000:4000"  # Only gateway is exposed externally
+    networks:
+      - microservices-network
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      patient-service:
+        condition: service_healthy
+      doctor-service:
+        condition: service_healthy
+      appointment-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+networks:
+  microservices-network:
+    driver: bridge
+    name: healthcare-network
